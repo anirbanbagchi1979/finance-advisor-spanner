@@ -20,15 +20,15 @@ with title_col:
     html(
         """
          <h1>
-         <a href="https://mwouts.github.io/itables">Cymbal Fund Advisor</a>
+         Cymbal Fund Advisor
          <h2>Search for your best Investment
          </h2>
         <script src="https://buttons.github.io/buttons.js"></script>"""
     )
 
 st.subheader('Search Criteria')
-investment_strategy = st.text_input("Investment Strategy", value="")
-investment_manager = st.text_input("Investment Manager", value="")
+investment_strategy = st.text_input("Investment Strategy", value="Europe or Asia")
+investment_manager = st.text_input("Investment Manager", value="Yet To Be Implemented")
 
 search_btn = st.button('Search for Best Funds..')
 
