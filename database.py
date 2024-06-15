@@ -18,25 +18,30 @@ def spanner_read_data(query):
   # Execute a simple SQL statement.
   outputs = []
   with database.snapshot() as snapshot:
-    results = snapshot.execute_sql(query)
-    rows = list()
-    for row in results:
-        rows.append(row)
-    # Get column names
-    cols = [x.name for x in results.fields]
-    # Convert to pandas dataframe
-    result_df = pd.DataFrame(rows, columns = cols)
-
+        results = snapshot.execute_sql(query)
+        rows = list()
+        for row in results:
+            rows.append(row)
+        # Get column names
+        cols = [x.name for x in results.fields]
+        # Convert to pandas dataframe
+        result_df = pd.DataFrame(rows, columns = cols)
   return result_df
 
 def fts_query(query_params):
-  print("Query Part",query_params)
-  query = "SELECT DISTINCT fund_name,investment_strategy FROM EU_MutualFunds WHERE SEARCH(investment_strategy_Tokens, '"+query_params[0]+"') order by fund_name;"
-  print("FTS Query",query)
-  df = spanner_read_data(query);
-#   print("Printing output")
-#   print(df)
-  return df
+    print("Query Part",query_params)
+
+    if(query_params[1]==''):
+        query = "SELECT DISTINCT fund_name,investment_strategy,investment_managers,fund_trailing_return_ytd,top5_holdings FROM EU_MutualFunds WHERE SEARCH(investment_strategy_Tokens, '"+query_params[0]+"') order by fund_name;"
+    else:
+        query = "SELECT DISTINCT fund_name,investment_managers,investment_strategy FROM EU_MutualFunds WHERE SEARCH(investment_managers_Tokens, '"+query_params[1]+"') AND SEARCH(investment_strategy_Tokens, '"+query_params[0]+"') order by fund_name;"
+    returnVals = dict(); 
+    returnVals['query'] = query
+    print("FTS Query",query)
+    df = spanner_read_data(query);
+
+    returnVals['data'] = df
+    return returnVals
 
 
 def like_query(query_part):
