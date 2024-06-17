@@ -13,7 +13,7 @@ from css import *
 from streamlit_extras.stylable_container import stylable_container
 from streamlit_extras.grid import grid 
 
-st.set_page_config(layout='wide', page_title='Cymbal Advisor', page_icon = favicon, initial_sidebar_state="expanded" )
+st.set_page_config(layout='wide', page_title='Cymbal Advisor', page_icon = favicon, initial_sidebar_state="expanded", )
 st.logo('images/investments.png')
 
 def asset_search():
@@ -60,8 +60,8 @@ def asset_search():
 with st.sidebar:
     
     with st.form("Asset Search"):
-        preciseVsText = st.radio("",["Full-Text", "Precise"],horizontal=True)
         st.subheader('Search Criteria')
+        preciseVsText = st.radio("",["Full-Text", "Precise"],horizontal=True)
         with st.expander("Asset Strategy",expanded=True):
             investment_strategy_pt1 = st.text_input("", value="Europe")
             andOrExclude = st.radio("",["AND", "OR", "EXCLUDE"],horizontal=True)

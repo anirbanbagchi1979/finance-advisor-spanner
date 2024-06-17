@@ -13,6 +13,7 @@ from css import *
 
 st.set_page_config(layout='wide', page_title='Cymbal Advisor', page_icon = favicon, initial_sidebar_state="expanded" )
 
+
 st.logo('images/investments.png')
 
 st.header("Welcome")
