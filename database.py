@@ -43,6 +43,18 @@ def fts_query(query_params):
     returnVals['data'] = df
     return returnVals
 
+def semantic_query(query_params):
+    print("Query Part",query_params)
+
+    query = "SELECT fund_name, investment_strategy,investment_managers, COSINE_DISTANCE( investment_strategy_Embedding, (SELECT embeddings. VALUES FROM ML.PREDICT( MODEL EmbeddingsModel, (SELECT '"+query_params[0]+"' AS content) ) ) ) AS distance FROM EU_MutualFunds WHERE investment_strategy_Embedding is not NULL ORDER BY distance LIMIT 10;"
+    
+    returnVals = dict(); 
+    returnVals['query'] = query
+    print("Semantic Query",query)
+    df = spanner_read_data(query);
+
+    returnVals['data'] = df
+    return returnVals
 
 def like_query(query_part):
   query = "SELECT DISTINCT complaint_id, Consumer_Complaint from Complaints  where Consumer_Complaint LIKE '%" +query_part+"%'  order by complaint_id asc"
