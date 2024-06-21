@@ -1,0 +1,12 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "Google Cloud Spanner Driver",
+            "name": "mf-data",
+            "project": "spanner-demos-ce",
+            "instance": "spanner-fts",
+            "database": "mf-data"
+        }
+    ]
+}

@@ -64,3 +64,18 @@ def like_query(query_part):
   print("Printing output")
   print(df)
   return df
+
+
+
+def compliance_query(query_params):
+    print("Query Part",query_params)
+
+    query = "GRAPH FundGraph MATCH (fund:Fund {NewMFSequence:750693762887319552})<-[:Manages]-(manager:Manager) RETURN fund.fund_name as fund_name, manager.name as manager_name"
+    
+    returnVals = dict(); 
+    returnVals['query'] = query
+    print("Compliance Query",query)
+    df = spanner_read_data(query);
+
+    returnVals['data'] = df
+    return returnVals
