@@ -233,3 +233,6 @@ WHERE
     'Europe AND Asia')
 ORDER BY
   fund_name;
+
+
+   SELECT DISTINCT fund_name, investment_managers, investment_strategy FROM EU_MutualFunds WHERE investment_managers LIKE ('%James%') AND ( investment_strategy LIKE ('%Europe%') OR investment_strategy LIKE ('%Asia%') ) ORDER BY fund_name;

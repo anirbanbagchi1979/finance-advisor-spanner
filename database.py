@@ -77,14 +77,18 @@ def semantic_query(query_params):
 
 
 def like_query(query_params):
+    if query_params[1] == "EXCLUDE":
+        query_params[1] = "AND"
     query = (
         " SELECT DISTINCT fund_name, investment_managers, investment_strategy FROM EU_MutualFunds WHERE investment_managers LIKE ('%"
         + query_params[3]
-        + "%') AND investment_strategy LIKE ('%"
+        + "%') AND ( investment_strategy LIKE ('%"
         + query_params[0]
-        + "%') OR investment_strategy LIKE ('%"
+        + "%') "
+        + query_params[1]
+        + " investment_strategy LIKE ('%"
         + query_params[2]
-        + "%') ORDER BY fund_name;"
+        + "%') ) ORDER BY fund_name;"
     )
     print(query)
 
