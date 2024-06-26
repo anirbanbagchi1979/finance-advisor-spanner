@@ -68,7 +68,7 @@ def compliance_search():
                 st.code(spanner_query, language="sql", line_numbers=False)
 
         formatted_time = f"{time_spent:.3f}"  # f-string for formatted output
-        st.text(f"The Query took {formatted_time} seconds to complete.")
+        # st.text(f"The Query took {formatted_time} seconds to complete.")
     # data_load_state.text("Loading data...done!")
     interactive_table(data, caption="", **it_args)
 

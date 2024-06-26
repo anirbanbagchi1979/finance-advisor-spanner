@@ -218,3 +218,18 @@ select distinct investment_strategy
 GRAPH FundGraph
 MATCH (fund:Fund {NewMFSequence:750693762887319552})<-[:Manages]-(manager:Manager)
 RETURN fund.fund_name as fund_name, manager.name as manager_name
+
+
+SELECT
+  DISTINCT fund_name,
+  investment_managers,
+  investment_strategy
+FROM
+  EU_MutualFunds
+WHERE
+  SEARCH_SUBSTRING(investment_managers_Substring_Tokens,
+    'James')
+  AND SEARCH(investment_strategy_Tokens,
+    'Europe AND Asia')
+ORDER BY
+  fund_name;

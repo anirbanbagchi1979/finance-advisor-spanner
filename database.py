@@ -41,11 +41,11 @@ def fts_query(query_params):
         )
     else:
         query = (
-            "SELECT DISTINCT fund_name,investment_managers,investment_strategy FROM EU_MutualFunds WHERE SEARCH(investment_managers_Tokens, '"
+            "SELECT DISTINCT fund_name, investment_managers, investment_strategy FROM EU_MutualFunds WHERE SEARCH_SUBSTRING(investment_managers_Substring_Tokens, '"
             + query_params[1]
             + "') AND SEARCH(investment_strategy_Tokens, '"
             + query_params[0]
-            + "') order by fund_name;"
+            + "') ORDER BY fund_name;"
         )
     returnVals = dict()
     returnVals["query"] = query
@@ -76,18 +76,26 @@ def semantic_query(query_params):
     return returnVals
 
 
-def like_query(query_part):
+def like_query(query_params):
     query = (
-        "SELECT DISTINCT complaint_id, Consumer_Complaint from Complaints  where Consumer_Complaint LIKE '%"
-        + query_part
-        + "%'  order by complaint_id asc"
+        " SELECT DISTINCT fund_name, investment_managers, investment_strategy FROM EU_MutualFunds WHERE investment_managers LIKE ('%"
+        + query_params[3]
+        + "%') AND investment_strategy LIKE ('%"
+        + query_params[0]
+        + "%') OR investment_strategy LIKE ('%"
+        + query_params[2]
+        + "%') ORDER BY fund_name;"
     )
     print(query)
 
+    # df = spanner_read_data(query)
+    returnVals = dict()
+    returnVals["query"] = query
+    print("FTS Query", query)
     df = spanner_read_data(query)
-    print("Printing output")
-    print(df)
-    return df
+
+    returnVals["data"] = df
+    return returnVals
 
 
 def compliance_query(query_params):

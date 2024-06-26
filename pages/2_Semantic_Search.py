@@ -44,7 +44,7 @@ def asset_semantic_search():
 
     # st.subheader('Funds Matching your Search')
     query_params = []
-    query_params.append(investment_strategy)
+    query_params.append(investment_strategy.strip())
     query_params.append(investment_manager)
     with st.spinner("Querying Spanner..."):
         start_time = time.time()
@@ -64,7 +64,7 @@ def asset_semantic_search():
             ):
                 st.code(spanner_query, language="sql", line_numbers=False)
         formatted_time = f"{time_spent:.3f}"  # f-string for formatted output
-        st.text(f"The Query took {formatted_time} seconds to complete.")
+        # st.text(f"The Query took {formatted_time} seconds to complete.")
         # data_load_state.text("Loading data...done!")
     interactive_table(data, caption="", **it_args)
 
