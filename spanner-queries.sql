@@ -203,6 +203,8 @@ select investment_managers
 	'Ed Dom'
 );
 
+SELECT fund_name, investment_strategy,investment_managers, COSINE_DISTANCE( investment_strategy_Embedding, (SELECT embeddings. VALUES FROM ML.PREDICT( MODEL EmbeddingsModel, (SELECT 'Invest in companies which also subscribe to my ideas around climate change, doing good for the planet' AS content) ) ) ) AS distance FROM EU_MutualFunds WHERE investment_strategy_Embedding is not NULL AND search_substring(investment_managers_substring_tokens, 'Brian') ORDER BY distance LIMIT 10;
+SELECT fund_name, investment_strategy,investment_managers, COSINE_DISTANCE( investment_strategy_Embedding, (SELECT embeddings. VALUES FROM ML.PREDICT( MODEL EmbeddingsModel, (SELECT 'Invest in companies which also subscribe to my ideas around climate change, doing good for the planet' AS content) ) ) ) AS distance FROM EU_MutualFunds WHERE investment_strategy_Embedding is not NULL ORDER BY distance LIMIT 10;
 
 
 select distinct investment_strategy

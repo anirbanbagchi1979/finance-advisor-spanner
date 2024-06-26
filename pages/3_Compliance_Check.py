@@ -13,13 +13,14 @@ from css import *
 from database import *
 from streamlit_extras.stylable_container import stylable_container
 from streamlit_extras.grid import grid
+import time
 
-st.set_page_config(layout='wide', page_title='Cymbal Advisor', page_icon = favicon, initial_sidebar_state="expanded" )
+st.set_page_config(layout='wide', page_title='FinVest Advisor', page_icon = favicon, initial_sidebar_state="expanded" )
 
 st.logo('images/investments.png')
 
 def compliance_search():
-    st.header("Cymbal Fund Advisor")
+    st.header("FinVest Fund Advisor")
     st.subheader("Compliance Search")
 
     classes_col, buttons_col, style_col, render_with_col = st.columns(
@@ -39,36 +40,47 @@ def compliance_search():
 
     # st.subheader('Funds Matching your Search')
     query_params = []
-    query_params.append(investment_strategy)
-    query_params.append(investment_manager)
-    data_load_state = st.text("Loading data...")
-    returnVals = compliance_query(query_params)
-    spanner_query = returnVals.get("query")
-    data = returnVals.get("data")
+    query_params.append(sectorOption)
+    query_params.append(exposurePercentage)
+    with st.spinner("Querying Spanner..."):
+        start_time = time.time()
+    # data_load_state = st.text("Loading data...")
+        returnVals = compliance_query(query_params)
+        spanner_query = returnVals.get("query")
+        data = returnVals.get("data")
+        time_spent = time.time() - start_time
 
-    with st.expander("Spanner Query"):
-        with stylable_container(
-            "codeblock",
-            """
-        code {
-            white-space: pre-wrap !important;
-        }
-        """,
-        ):
-            st.code(spanner_query, language="sql", line_numbers=False)
-    data_load_state.text("Loading data...done!")
-    interactive_table(data, caption="Fund Choices for You", **it_args)
+        with st.expander("Spanner Query"):
+            with stylable_container(
+                "codeblock",
+                """
+            code {
+                white-space: pre-wrap !important;
+            }
+            """,
+            ):
+                st.code(spanner_query, language="sql", line_numbers=False)
+    
+        formatted_time = f"{time_spent:.3f}"  # f-string for formatted output
+        st.text(f"The Query took {formatted_time} seconds to complete.")
+    # data_load_state.text("Loading data...done!")
+    interactive_table(data, caption="", **it_args)
 
 
 with st.sidebar:
 
     with st.form("Compliance Search"):
         st.subheader("Search Criteria")
-        investment_strategy = st.text_area(
-            "Search for me",
-            value="Graph Search",
-        )
-        investment_manager = st.text_input("Investment Manager", value="")
+        sectorOption = st.selectbox(
+                "Which sector would you want to focus on?",
+                ("Technology", "Pharma", "Semiconductors"),
+                index=None,
+                placeholder="Select sector ...",
+                        )
+        exposurePercentage = st.select_slider(
+                "How much exposure to this sector would you prefer",
+                options=["10%", "20%", "30%", "40%", "50%", "60%", "70%"])
+        exposurePercentage = exposurePercentage[:2]
         compliance_search_submitted = st.form_submit_button("Submit")
 if compliance_search_submitted:
     compliance_search()

@@ -12,12 +12,20 @@ from database import *
 from css import *
 from streamlit_extras.stylable_container import stylable_container
 from streamlit_extras.grid import grid 
+import time as time
 
-st.set_page_config(layout='wide', page_title='Cymbal Advisor', page_icon = favicon, initial_sidebar_state="expanded", )
+
+st.set_page_config(layout='wide', page_title='FinVest Advisor', page_icon = favicon, initial_sidebar_state="expanded", )
 st.logo('images/investments.png')
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+local_css("pages/styles.css")
 
 def asset_search():
-    st.header("Cymbal Fund Advisor")
+    # st.image('images/Finvest-white-removebg-small.png')
+    st.header("FinVest Fund Advisor")
     st.subheader("Asset Search")
 
     classes_col, buttons_col, style_col, render_with_col = st.columns(
@@ -39,26 +47,37 @@ def asset_search():
     query_params = []
     query_params.append(investment_strategy)
     query_params.append(investment_manager)
-    data_load_state = st.text('Loading data...')
-    returnVals = fts_query(query_params)
-    spanner_query =returnVals.get('query')
-    data = returnVals.get('data')
 
-    with st.expander("Spanner Query"):
-        with stylable_container(
-        "codeblock",
-        """
-        code {
-            white-space: pre-wrap !important;
-        }
-        """,
-        ):
-            st.code(spanner_query,language="sql", line_numbers=False)
-    data_load_state.text('Loading data...done!')
-    interactive_table(data, caption="Fund Choices for You", **it_args)
+    with st.spinner('Querying Spanner...'):
+        time.sleep(1)
+        start_time = time.time()
+
+        returnVals = fts_query(query_params)
+        spanner_query =returnVals.get('query')
+        time_spent = time.time() - start_time
+        data = returnVals.get('data')
+
+        with st.expander("Spanner Query"):
+            with stylable_container(
+            "codeblock",
+            """
+            code {
+                white-space: pre-wrap !important;
+            }
+            """,
+            ):
+                st.code(spanner_query,language="sql", line_numbers=False)
+            
+        # st.success('Done!')
+    formatted_time = f"{time_spent:.3f}"  # f-string for formatted output
+    st.text(f"The Query took {formatted_time} seconds to complete.")
+
+    # data_load_state = st.text('Loading data...')
+#   data_load_state.text('Loading data...done!')
+    interactive_table(data, caption="", **it_args)
 
 with st.sidebar:
-    
+       
     with st.form("Asset Search"):
         st.subheader('Search Criteria')
         preciseVsText = st.radio("",["Full-Text", "Precise"],horizontal=True)
