@@ -59,7 +59,6 @@ def fts_query(query_params):
 def semantic_query(query_params):
     print("Query Part", query_params)
 
-
     query = (
         "SELECT fund_name, investment_strategy,investment_managers, COSINE_DISTANCE( investment_strategy_Embedding, (SELECT embeddings. VALUES FROM ML.PREDICT( MODEL EmbeddingsModel, (SELECT '"
         + query_params[0]

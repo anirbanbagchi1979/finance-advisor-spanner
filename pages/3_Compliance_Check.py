@@ -15,9 +15,15 @@ from streamlit_extras.stylable_container import stylable_container
 from streamlit_extras.grid import grid
 import time
 
-st.set_page_config(layout='wide', page_title='FinVest Advisor', page_icon = favicon, initial_sidebar_state="expanded" )
+st.set_page_config(
+    layout="wide",
+    page_title="FinVest Advisor",
+    page_icon=favicon,
+    initial_sidebar_state="expanded",
+)
 
-st.logo('images/investments.png')
+st.logo("images/investments.png")
+
 
 def compliance_search():
     st.header("FinVest Fund Advisor")
@@ -44,7 +50,7 @@ def compliance_search():
     query_params.append(exposurePercentage)
     with st.spinner("Querying Spanner..."):
         start_time = time.time()
-    # data_load_state = st.text("Loading data...")
+        # data_load_state = st.text("Loading data...")
         returnVals = compliance_query(query_params)
         spanner_query = returnVals.get("query")
         data = returnVals.get("data")
@@ -60,7 +66,7 @@ def compliance_search():
             """,
             ):
                 st.code(spanner_query, language="sql", line_numbers=False)
-    
+
         formatted_time = f"{time_spent:.3f}"  # f-string for formatted output
         st.text(f"The Query took {formatted_time} seconds to complete.")
     # data_load_state.text("Loading data...done!")
@@ -72,17 +78,18 @@ with st.sidebar:
     with st.form("Compliance Search"):
         st.subheader("Search Criteria")
         sectorOption = st.selectbox(
-                "Which sector would you want to focus on?",
-                ("Technology", "Pharma", "Semiconductors"),
-                index=None,
-                placeholder="Select sector ...",
-                        )
+            "Which sector would you want to focus on?",
+            ("Technology", "Pharma", "Semiconductors"),
+            index=None,
+            placeholder="Select sector ...",
+        )
         exposurePercentage = st.select_slider(
-                "How much exposure to this sector would you prefer",
-                options=["10%", "20%", "30%", "40%", "50%", "60%", "70%"])
+            "How much exposure to this sector would you prefer",
+            options=["10%", "20%", "30%", "40%", "50%", "60%", "70%"],
+        )
         exposurePercentage = exposurePercentage[:2]
         compliance_search_submitted = st.form_submit_button("Submit")
 if compliance_search_submitted:
     compliance_search()
 
-st.markdown(footer,unsafe_allow_html=True)
+st.markdown(footer, unsafe_allow_html=True)

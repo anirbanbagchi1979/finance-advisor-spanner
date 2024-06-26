@@ -11,17 +11,26 @@ import pages as pg
 from database import *
 from css import *
 from streamlit_extras.stylable_container import stylable_container
-from streamlit_extras.grid import grid 
+from streamlit_extras.grid import grid
 import time as time
 
 
-st.set_page_config(layout='wide', page_title='FinVest Advisor', page_icon = favicon, initial_sidebar_state="expanded", )
-st.logo('images/investments.png')
+st.set_page_config(
+    layout="wide",
+    page_title="FinVest Advisor",
+    page_icon=favicon,
+    initial_sidebar_state="expanded",
+)
+st.logo("images/investments.png")
+
+
 def local_css(file_name):
     with open(file_name) as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 
 local_css("pages/styles.css")
+
 
 def asset_search():
     # st.image('images/Finvest-white-removebg-small.png')
@@ -32,7 +41,7 @@ def asset_search():
         [0.25, 0.25, 0.20, 0.10]
     )
     classes = ["display", "compact", "cell-border", "stripe"]
-    buttons = ["pageLength",  "csvHtml5", "excelHtml5", "colvis"]
+    buttons = ["pageLength", "csvHtml5", "excelHtml5", "colvis"]
     render_with = "itables"
     style = "table-layout:auto;width:auto;margin:auto;caption-side:bottom"
     it_args = dict(
@@ -48,53 +57,62 @@ def asset_search():
     query_params.append(investment_strategy)
     query_params.append(investment_manager)
 
-    with st.spinner('Querying Spanner...'):
+    with st.spinner("Querying Spanner..."):
         time.sleep(1)
         start_time = time.time()
 
         returnVals = fts_query(query_params)
-        spanner_query =returnVals.get('query')
+        spanner_query = returnVals.get("query")
         time_spent = time.time() - start_time
-        data = returnVals.get('data')
+        data = returnVals.get("data")
 
         with st.expander("Spanner Query"):
             with stylable_container(
-            "codeblock",
-            """
+                "codeblock",
+                """
             code {
                 white-space: pre-wrap !important;
             }
             """,
             ):
-                st.code(spanner_query,language="sql", line_numbers=False)
-            
+                st.code(spanner_query, language="sql", line_numbers=False)
+
         # st.success('Done!')
     formatted_time = f"{time_spent:.3f}"  # f-string for formatted output
     st.text(f"The Query took {formatted_time} seconds to complete.")
 
     # data_load_state = st.text('Loading data...')
-#   data_load_state.text('Loading data...done!')
+    #   data_load_state.text('Loading data...done!')
     interactive_table(data, caption="", **it_args)
 
+
 with st.sidebar:
-       
+
     with st.form("Asset Search"):
-        st.subheader('Search Criteria')
-        preciseVsText = st.radio("",["Full-Text", "Precise"],horizontal=True)
-        with st.expander("Asset Strategy",expanded=True):
+        st.subheader("Search Criteria")
+        preciseVsText = st.radio("", ["Full-Text", "Precise"], horizontal=True)
+        with st.expander("Asset Strategy", expanded=True):
             investment_strategy_pt1 = st.text_input("", value="Europe")
-            andOrExclude = st.radio("",["AND", "OR", "EXCLUDE"],horizontal=True)
+            andOrExclude = st.radio("", ["AND", "OR", "EXCLUDE"], horizontal=True)
             investment_strategy_pt2 = st.text_input("", value="Asia")
         investment_manager = st.text_input("Investment Manager", value="")
-        if(preciseVsText == 'Full-Text'):
-            if(andOrExclude == 'EXCLUDE'):
-                investment_strategy = investment_strategy_pt1 + " -" + investment_strategy_pt2
+        if preciseVsText == "Full-Text":
+            if andOrExclude == "EXCLUDE":
+                investment_strategy = (
+                    investment_strategy_pt1 + " -" + investment_strategy_pt2
+                )
             else:
-                investment_strategy = investment_strategy_pt1 + " "+ andOrExclude +" "+ investment_strategy_pt2
+                investment_strategy = (
+                    investment_strategy_pt1
+                    + " "
+                    + andOrExclude
+                    + " "
+                    + investment_strategy_pt2
+                )
         else:
             st.error("Precise Search Not Implemented")
         asset_search_submitted = st.form_submit_button("Submit")
-if(asset_search_submitted):
+if asset_search_submitted:
     asset_search()
 
-st.markdown(footer,unsafe_allow_html=True)
+st.markdown(footer, unsafe_allow_html=True)
