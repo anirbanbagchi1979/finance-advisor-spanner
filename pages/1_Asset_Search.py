@@ -54,10 +54,10 @@ def asset_search_precise():
 
     # st.subheader('Funds Matching your Search')
     query_params = []
-    query_params.append(investment_strategy_pt1)
+    query_params.append(investment_strategy_pt1.strip())
     query_params.append(andOrExclude)
-    query_params.append(investment_strategy_pt2)
-    query_params.append(investment_manager)
+    query_params.append(investment_strategy_pt2.strip())
+    query_params.append(investment_manager.strip())
 
     with st.spinner("Querying Spanner..."):
         time.sleep(1)

@@ -45,7 +45,7 @@ def asset_semantic_search():
     # st.subheader('Funds Matching your Search')
     query_params = []
     query_params.append(investment_strategy.strip())
-    query_params.append(investment_manager)
+    query_params.append(investment_manager.strip())
     with st.spinner("Querying Spanner..."):
         start_time = time.time()
         # data_load_state = st.text("Loading data...")

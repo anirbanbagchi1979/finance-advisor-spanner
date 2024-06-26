@@ -58,15 +58,20 @@ def fts_query(query_params):
 
 def semantic_query(query_params):
     print("Query Part", query_params)
-
-    query = (
-        "SELECT fund_name, investment_strategy,investment_managers, COSINE_DISTANCE( investment_strategy_Embedding, (SELECT embeddings. VALUES FROM ML.PREDICT( MODEL EmbeddingsModel, (SELECT '"
-        + query_params[0]
-        + "' AS content) ) ) ) AS distance FROM EU_MutualFunds WHERE investment_strategy_Embedding is not NULL  AND  search_substring(investment_managers_substring_tokens, '"
-        + query_params[1]
-        + "')ORDER BY distance LIMIT 10;"
-    )
-
+    if query_params[1].strip() != "":
+        query = (
+            "SELECT fund_name, investment_strategy,investment_managers, COSINE_DISTANCE( investment_strategy_Embedding, (SELECT embeddings. VALUES FROM ML.PREDICT( MODEL EmbeddingsModel, (SELECT '"
+            + query_params[0]
+            + "' AS content) ) ) ) AS distance FROM EU_MutualFunds WHERE investment_strategy_Embedding is not NULL  AND  search_substring(investment_managers_substring_tokens, '"
+            + query_params[1]
+            + "')ORDER BY distance LIMIT 10;"
+        )
+    else:
+        query = (
+            "SELECT fund_name, investment_strategy,investment_managers, COSINE_DISTANCE( investment_strategy_Embedding, (SELECT embeddings. VALUES FROM ML.PREDICT( MODEL EmbeddingsModel, (SELECT '"
+            + query_params[0]
+            + "' AS content) ) ) ) AS distance FROM EU_MutualFunds WHERE investment_strategy_Embedding is not NULL  ORDER BY distance LIMIT 10;"
+        )
     returnVals = dict()
     returnVals["query"] = query
     print("Semantic Query", query)
