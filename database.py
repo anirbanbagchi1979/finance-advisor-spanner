@@ -125,3 +125,41 @@ def compliance_query(query_params):
 
     returnVals["data"] = df
     return returnVals
+
+
+def graph_dtls_query():
+    query = "select * from  Companies;"
+    df = spanner_read_data(query)
+
+    returnVals = dict()
+    df_companies = spanner_read_data(query)
+    returnVals["Companies"] = df_companies
+
+    query = "select * from  Sectors;"
+    df_sectors = spanner_read_data(query)
+    returnVals["Sectors"] = df_sectors
+
+    query = "select * from  Managers LIMIT 100;"
+    df_managers = spanner_read_data(query)
+    returnVals["Managers"] = df_managers
+
+    query = "SELECT * from CompanyBelongsSector;"
+    df_comp_sec_edge = spanner_read_data(query)
+    returnVals["CompanySectorRelation"] = df_comp_sec_edge
+
+    query = " SELECT mgrs.NewMFSequence,fund_name,ManagerSeq from ManagerManagesFund mgrs JOIN EU_MutualFunds funds ON mgrs.NewMFSequence =  funds.NewMFSequence where ManagerSeq in (select ManagerSeq from Managers LIMIT 100);"
+    mgr_fund_edge = spanner_read_data(query)
+    returnVals["ManagerFundRelation"] = mgr_fund_edge
+
+    query = "select fund_name, NewMFSequence from EU_MutualFunds where NewMFSequence in (SELECT NewMFSequence FROM FundHoldsCompany);"
+    # query = "SELECT mgrs.NewMFSequence,fund_name,ManagerSeq from ManagerManagesFund mgrs JOIN EU_MutualFunds funds ON mgrs.NewMFSequence =  funds.NewMFSequence ;"
+    #query = "select fund_name, NewMFSequence from EU_MutualFunds where NewMFSequence in (SELECT NewMFSequence FROM FundHoldsCompany);"
+
+    funds_node = spanner_read_data(query)
+    returnVals["Funds"] = funds_node
+
+    query = "SELECT * FROM FundHoldsCompany;"
+    funds_hold_company_edge = spanner_read_data(query)
+    returnVals["FundsHoldsCompaniesRelation"] = funds_hold_company_edge
+
+    return returnVals

@@ -4,3 +4,6 @@ google-cloud-spanner
 itables
 streamlit-navigation-bar
 streamlit-extras
+streamlit-agraph
+SPARQLWrapper
+pyvis

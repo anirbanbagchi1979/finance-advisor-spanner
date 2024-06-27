@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 1500px;
+                 height: 900px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "269371552712097792", "image": "file://images/company_icon.png", "label": "Trip.com Group Ltd", "shape": "image", "title": "Trip.com Group Ltd"}, {"color": "#97c2fc", "id": "323414748240543744", "image": "file://images/company_icon.png", "label": "Shenzhou International Group Holdings Ltd", "shape": "image", "title": "Shenzhou International Group Holdings Ltd"}, {"color": "#97c2fc", "id": "485544334825881600", "image": "file://images/company_icon.png", "label": "Resona Holdings Inc", "shape": "image", "title": "Resona Holdings Inc"}, {"color": "#97c2fc", "id": "701717116939665408", "image": "file://images/company_icon.png", "label": "Samsung Electronics Co Ltd", "shape": "image", "title": "Samsung Electronics Co Ltd"}, {"color": "#97c2fc", "id": "1134062681167233024", "image": "file://images/company_icon.png", "label": "ANZ Group Holdings Ltd", "shape": "image", "title": "ANZ Group Holdings Ltd"}, {"color": "#97c2fc", "id": "1188105876695678976", "image": "file://images/company_icon.png", "label": "Reliance Industries Ltd", "shape": "image", "title": "Reliance Industries Ltd"}, {"color": "#97c2fc", "id": "1350235463281016832", "image": "file://images/company_icon.png", "label": "Mainfreight Ltd", "shape": "image", "title": "Mainfreight Ltd"}, {"color": "#97c2fc", "id": "1566408245394800640", "image": "file://images/company_icon.png", "label": "Alibaba Group Holding Ltd", "shape": "image", "title": "Alibaba Group Holding Ltd"}, {"color": "#97c2fc", "id": "1998753809622368256", "image": "file://images/company_icon.png", "label": "Industrial And Commercial Bank Of China Ltd", "shape": "image", "title": "Industrial And Commercial Bank Of China Ltd"}, {"color": "#97c2fc", "id": "2214926591736152064", "image": "file://images/company_icon.png", "label": "Quanta Computer Inc", "shape": "image", "title": "Quanta Computer Inc"}, {"color": "#97c2fc", "id": "2431099373849935872", "image": "file://images/company_icon.png", "label": "Taiwan Semiconductor Manufacturing Co Ltd", "shape": "image", "title": "Taiwan Semiconductor Manufacturing Co Ltd"}, {"color": "#97c2fc", "id": "2863444938077503488", "image": "file://images/company_icon.png", "label": "Mitsubishi Estate Co Ltd", "shape": "image", "title": "Mitsubishi Estate Co Ltd"}, {"color": "#97c2fc", "id": "2917488133605949440", "image": "file://images/company_icon.png", "label": "PetroChina Co Ltd", "shape": "image", "title": "PetroChina Co Ltd"}, {"color": "#97c2fc", "id": "3079617720191287296", "image": "file://images/company_icon.png", "label": "Mitsui \u0026 Co Ltd", "shape": "image", "title": "Mitsui \u0026 Co Ltd"}, {"color": "#97c2fc", "id": "3295790502305071104", "image": "file://images/company_icon.png", "label": "ICICI Bank Ltd", "shape": "image", "title": "ICICI Bank Ltd"}, {"color": "#97c2fc", "id": "3728136066532638720", "image": "file://images/company_icon.png", "label": "NARI Technology Co Ltd", "shape": "image", "title": "NARI Technology Co Ltd"}, {"color": "#97c2fc", "id": "3944308848646422528", "image": "file://images/company_icon.png", "label": "Hitachi Ltd", "shape": "image", "title": "Hitachi Ltd"}, {"color": "#97c2fc", "id": "4160481630760206336", "image": "file://images/company_icon.png", "label": "Samsung Fire \u0026 Marine Insurance Co Ltd", "shape": "image", "title": "Samsung Fire \u0026 Marine Insurance Co Ltd"}, {"color": "#97c2fc", "id": "4592827194987773952", "image": "file://images/company_icon.png", "label": "Mitsubishi Corp", "shape": "image", "title": "Mitsubishi Corp"}, {"color": "#97c2fc", "id": "4646870390516219904", "image": "file://images/company_icon.png", "label": "Mitsubishi Electric Corp", "shape": "image", "title": "Mitsubishi Electric Corp"}, {"color": "#97c2fc", "id": "5025172759215341568", "image": "file://images/company_icon.png", "label": "AIA Group Ltd", "shape": "image", "title": "AIA Group Ltd"}, {"color": "#97c2fc", "id": "5457518323442909184", "image": "file://images/company_icon.png", "label": "Baidu Inc", "shape": "image", "title": "Baidu Inc"}, {"color": "#97c2fc", "id": "5673691105556692992", "image": "file://images/company_icon.png", "label": "Mitsubishi Heavy Industries Ltd", "shape": "image", "title": "Mitsubishi Heavy Industries Ltd"}, {"color": "#97c2fc", "id": "5889863887670476800", "image": "file://images/company_icon.png", "label": "Tencent Holdings Ltd", "shape": "image", "title": "Tencent Holdings Ltd"}, {"color": "#97c2fc", "id": "6322209451898044416", "image": "file://images/company_icon.png", "label": "PT Bank Mandiri (Persero) Tbk", "shape": "image", "title": "PT Bank Mandiri (Persero) Tbk"}, {"color": "#97c2fc", "id": "6376252647426490368", "image": "file://images/company_icon.png", "label": "China Petroleum \u0026 Chemical Corp", "shape": "image", "title": "China Petroleum \u0026 Chemical Corp"}, {"color": "#97c2fc", "id": "6538382234011828224", "image": "file://images/company_icon.png", "label": "Aspeed Technology Inc", "shape": "image", "title": "Aspeed Technology Inc"}, {"color": "#97c2fc", "id": "6754555016125612032", "image": "file://images/company_icon.png", "label": "JD.com Inc", "shape": "image", "title": "JD.com Inc"}, {"color": "#97c2fc", "id": "7186900580353179648", "image": "file://images/company_icon.png", "label": "Mahindra \u0026 Mahindra Ltd", "shape": "image", "title": "Mahindra \u0026 Mahindra Ltd"}, {"color": "#97c2fc", "id": "7403073362466963456", "image": "file://images/company_icon.png", "label": "Koh Young Technology Inc", "shape": "image", "title": "Koh Young Technology Inc"}, {"color": "#97c2fc", "id": "7619246144580747264", "image": "file://images/company_icon.png", "label": "HDFC Bank Ltd", "shape": "image", "title": "HDFC Bank Ltd"}, {"color": "#97c2fc", "id": "8051591708808314880", "image": "file://images/company_icon.png", "label": "T\u0026D Holdings Inc", "shape": "image", "title": "T\u0026D Holdings Inc"}, {"color": "#97c2fc", "id": "8105634904336760832", "image": "file://images/company_icon.png", "label": "Zijin Mining Group Co Ltd", "shape": "image", "title": "Zijin Mining Group Co Ltd"}, {"color": "#97c2fc", "id": "8267764490922098688", "image": "file://images/company_icon.png", "label": "Unimicron Technology Corp", "shape": "image", "title": "Unimicron Technology Corp"}, {"color": "#97c2fc", "id": "8483937273035882496", "image": "file://images/company_icon.png", "label": "Kasikornbank Public Co Ltd", "shape": "image", "title": "Kasikornbank Public Co Ltd"}, {"color": "#97c2fc", "id": "8916282837263450112", "image": "file://images/company_icon.png", "label": "Other Technology", "shape": "image", "title": "Other Technology"}, {"color": "#97c2fc", "id": "9132455619377233920", "image": "file://images/company_icon.png", "label": "Ping An Insurance (Group) Co. of China Ltd", "shape": "image", "title": "Ping An Insurance (Group) Co. of China Ltd"}, {"color": "red", "id": "576460752303423488", "label": "Consumer Cyclical", "shape": "dot", "title": "Consumer Cyclical"}, {"color": "red", "id": "1729382256910270464", "label": "Basic Materials", "shape": "dot", "title": "Basic Materials"}, {"color": "red", "id": "2305843009213693952", "label": "Financial Services", "shape": "dot", "title": "Financial Services"}, {"color": "red", "id": "3458764513820540928", "label": "Energy", "shape": "dot", "title": "Energy"}, {"color": "red", "id": "4035225266123964416", "label": "Technology", "shape": "dot", "title": "Technology"}, {"color": "red", "id": "5188146770730811392", "label": " Financial Services", "shape": "dot", "title": " Financial Services"}, {"color": "red", "id": "5764607523034234880", "label": "Industrials", "shape": "dot", "title": "Industrials"}, {"color": "red", "id": "6917529027641081856", "label": "6917529027641081856", "shape": "dot", "title": null}, {"color": "red", "id": "7493989779944505344", "label": "Communication Services", "shape": "dot", "title": "Communication Services"}, {"color": "red", "id": "8646911284551352320", "label": "Real Estate", "shape": "dot", "title": "Real Estate"}, {"color": "yellow", "id": "4816177589007679488", "label": "Schroder International Selection Fund Emerging Asia Z Accumulation EUR", "shape": "dot", "title": "Schroder International Selection Fund Emerging Asia Z Accumulation EUR"}, {"color": "yellow", "id": "5772207347405422592", "label": "Invesco Funds - Invesco Asian Equity Fund E Accumulation EUR", "shape": "dot", "title": "Invesco Funds - Invesco Asian Equity Fund E Accumulation EUR"}, {"color": "yellow", "id": "7498774854548586496", "label": "Robeco Asian Stars Equities D \u20ac", "shape": "dot", "title": "Robeco Asian Stars Equities D \u20ac"}, {"color": "yellow", "id": "7842174326135586816", "label": "Manulife Global Fund - Asian Equity Fund AA", "shape": "dot", "title": "Manulife Global Fund - Asian Equity Fund AA"}, {"color": "yellow", "id": "9108600615101005824", "label": "Allianz Global Investors Fund - Allianz Oriental Income A EUR", "shape": "dot", "title": "Allianz Global Investors Fund - Allianz Oriental Income A EUR"}]);
+                  edges = new vis.DataSet([{"from": "269371552712097792", "title": "BELONGS", "to": "576460752303423488"}, {"from": "323414748240543744", "title": "BELONGS", "to": "576460752303423488"}, {"from": "485544334825881600", "title": "BELONGS", "to": "2305843009213693952"}, {"from": "701717116939665408", "title": "BELONGS", "to": "4035225266123964416"}, {"from": "1134062681167233024", "title": "BELONGS", "to": "2305843009213693952"}, {"from": "1188105876695678976", "title": "BELONGS", "to": "3458764513820540928"}, {"from": "1350235463281016832", "title": "BELONGS", "to": "5764607523034234880"}, {"from": "1566408245394800640", "title": "BELONGS", "to": "576460752303423488"}, {"from": "1998753809622368256", "title": "BELONGS", "to": "2305843009213693952"}, {"from": "2214926591736152064", "title": "BELONGS", "to": "4035225266123964416"}, {"from": "2431099373849935872", "title": "BELONGS", "to": "4035225266123964416"}, {"from": "2863444938077503488", "title": "BELONGS", "to": "8646911284551352320"}, {"from": "2917488133605949440", "title": "BELONGS", "to": "3458764513820540928"}, {"from": "3079617720191287296", "title": "BELONGS", "to": "5764607523034234880"}, {"from": "3295790502305071104", "title": "BELONGS", "to": "2305843009213693952"}, {"from": "3728136066532638720", "title": "BELONGS", "to": "5764607523034234880"}, {"from": "3944308848646422528", "title": "BELONGS", "to": "5764607523034234880"}, {"from": "4160481630760206336", "title": "BELONGS", "to": "2305843009213693952"}, {"from": "4592827194987773952", "title": "BELONGS", "to": "5764607523034234880"}, {"from": "4646870390516219904", "title": "BELONGS", "to": "5764607523034234880"}, {"from": "5025172759215341568", "title": "BELONGS", "to": "2305843009213693952"}, {"from": "5457518323442909184", "title": "BELONGS", "to": "7493989779944505344"}, {"from": "5673691105556692992", "title": "BELONGS", "to": "5764607523034234880"}, {"from": "5889863887670476800", "title": "BELONGS", "to": "7493989779944505344"}, {"from": "6322209451898044416", "title": "BELONGS", "to": "5188146770730811392"}, {"from": "6376252647426490368", "title": "BELONGS", "to": "3458764513820540928"}, {"from": "6538382234011828224", "title": "BELONGS", "to": "4035225266123964416"}, {"from": "6754555016125612032", "title": "BELONGS", "to": "576460752303423488"}, {"from": "7186900580353179648", "title": "BELONGS", "to": "576460752303423488"}, {"from": "7403073362466963456", "title": "BELONGS", "to": "4035225266123964416"}, {"from": "7619246144580747264", "title": "BELONGS", "to": "2305843009213693952"}, {"from": "8051591708808314880", "title": "BELONGS", "to": "2305843009213693952"}, {"from": "8105634904336760832", "title": "BELONGS", "to": "1729382256910270464"}, {"from": "8267764490922098688", "title": "BELONGS", "to": "4035225266123964416"}, {"from": "8483937273035882496", "title": "BELONGS", "to": "2305843009213693952"}, {"from": "8916282837263450112", "title": "BELONGS", "to": "4035225266123964416"}, {"from": "9132455619377233920", "title": "BELONGS", "to": "2305843009213693952"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "323414748240543744"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "701717116939665408"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "1188105876695678976"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "1566408245394800640"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "2431099373849935872"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "2917488133605949440"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "5889863887670476800"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "6376252647426490368"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "7619246144580747264"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "8105634904336760832"}, {"from": "4816177589007679488", "title": "HOLDS", "to": "8916282837263450112"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "701717116939665408"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "1566408245394800640"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "2431099373849935872"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "3295790502305071104"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "4160481630760206336"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "5025172759215341568"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "5889863887670476800"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "6754555016125612032"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "7619246144580747264"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "8483937273035882496"}, {"from": "5772207347405422592", "title": "HOLDS", "to": "8916282837263450112"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "701717116939665408"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "1134062681167233024"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "1566408245394800640"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "2431099373849935872"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "2863444938077503488"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "3944308848646422528"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "4592827194987773952"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "4646870390516219904"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "6322209451898044416"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "8051591708808314880"}, {"from": "7498774854548586496", "title": "HOLDS", "to": "8916282837263450112"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "269371552712097792"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "701717116939665408"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "1998753809622368256"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "2431099373849935872"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "3295790502305071104"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "3728136066532638720"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "5025172759215341568"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "5457518323442909184"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "5889863887670476800"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "7186900580353179648"}, {"from": "7842174326135586816", "title": "HOLDS", "to": "8916282837263450112"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "485544334825881600"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "1350235463281016832"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "2214926591736152064"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "3079617720191287296"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "3944308848646422528"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "5673691105556692992"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "6538382234011828224"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "7403073362466963456"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "8267764490922098688"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "8916282837263450112"}, {"from": "9108600615101005824", "title": "HOLDS", "to": "9132455619377233920"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
