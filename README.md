@@ -2,9 +2,9 @@
 
 ## For changing instance and databases 
 go to ```database.py``` and change these values
-### Your Cloud Spanner instance ID.
+#### Cloud Spanner instance ID.
 ```instance_id = "spanner-fts"```
-### Your Cloud Spanner database ID.
+#### Cloud Spanner database ID.
 ```database_id = "mf-data"```
 
 ## For running locally
