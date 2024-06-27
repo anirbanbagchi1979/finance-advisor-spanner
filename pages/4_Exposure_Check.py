@@ -27,7 +27,7 @@ st.logo("images/investments.png")
 
 def compliance_search():
     st.header("FinVest Fund Advisor")
-    st.subheader("Compliance Search")
+    st.subheader("Exposure Check")
 
     classes_col, buttons_col, style_col, render_with_col = st.columns(
         [0.25, 0.25, 0.20, 0.10]

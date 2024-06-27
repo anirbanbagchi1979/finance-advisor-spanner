@@ -6,7 +6,7 @@ from pyvis.network import Network
 import got
 
 # Network(notebook=True)
-st.title("Hello Pyvis")
+st.subheader("Show me the Relationships between Funds ,Companies and Sectors")
 # make Network show itself with repr_html
 
 # def net_repr_html(self):
@@ -15,14 +15,10 @@ st.title("Hello Pyvis")
 #  return html
 
 # Network._repr_html_ = net_repr_html
-st.sidebar.title("Choose your favorite Graph")
-option = st.sidebar.selectbox("select graph", ("Simple", "Karate", "GOT"))
-physics = st.sidebar.checkbox("add physics interactivity?")
 got.simple_func_nonx()
 
-if option == "Simple":
-    HtmlFile = open("Anirban.html", "r", encoding="utf-8")
-    source_code = HtmlFile.read()
-    components.html(source_code, height=900, width=1500)
+HtmlFile = open("Anirban.html", "r", encoding="utf-8")
+source_code = HtmlFile.read()
+components.html(source_code, height=950, width=1000)
 
 
