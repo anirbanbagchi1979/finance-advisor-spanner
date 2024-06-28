@@ -1,12 +1,14 @@
 from google.cloud import spanner
 from google.cloud import spanner
 import pandas as pd
+import os
+from dotenv import load_dotenv
 
-# Your Cloud Spanner instance ID.
-instance_id = "spanner-fts"
-# Your Cloud Spanner database ID.
-database_id = "mf-data"
-# Instantiate a client.
+load_dotenv()
+
+instance_id = os.getenv('instance_id')
+database_id = os.getenv('database_id')
+
 spanner_client = spanner.Client()
 
 # Get a Cloud Spanner instance by ID.
@@ -108,8 +110,6 @@ def like_query(query_params):
 
 
 def compliance_query(query_params):
-    print("Query Part", query_params)
-
     query = (
         "GRAPH FundGraph MATCH (sector:Sector {sector_name: '"
         + query_params[0]
@@ -120,7 +120,6 @@ def compliance_query(query_params):
 
     returnVals = dict()
     returnVals["query"] = query
-    print("Compliance Query", query)
     df = spanner_read_data(query)
 
     returnVals["data"] = df

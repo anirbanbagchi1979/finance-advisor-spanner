@@ -3,7 +3,7 @@ import streamlit.components.v1 as components
 import networkx as nx
 import matplotlib.pyplot as plt
 from pyvis.network import Network
-import got
+import graph_viz
 
 # Network(notebook=True)
 st.subheader("Show me the Relationships between Funds ,Companies and Sectors")
@@ -15,7 +15,7 @@ st.subheader("Show me the Relationships between Funds ,Companies and Sectors")
 #  return html
 
 # Network._repr_html_ = net_repr_html
-got.simple_func_nonx()
+graph_viz.simple_func_nonx()
 
 HtmlFile = open("Anirban.html", "r", encoding="utf-8")
 source_code = HtmlFile.read()

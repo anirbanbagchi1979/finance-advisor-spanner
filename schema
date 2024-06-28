@@ -1,0 +1,206 @@
+CREATE TABLE
+  EU_MutualFunds ( NewMFSequence INT64 DEFAULT (GET_NEXT_SEQUENCE_VALUE(SEQUENCE EU_MF_Sequence)),
+    ticker STRING(MAX),
+    isin STRING(MAX),
+    fund_name STRING(MAX),
+    inception_date DATE,
+    category STRING(MAX),
+    rating FLOAT64,
+    analyst_rating STRING(MAX),
+    risk_rating FLOAT64,
+    performance_rating FLOAT64,
+    investment_strategy STRING(MAX),
+    investment_managers STRING(MAX),
+    dividend_frequency STRING(MAX),
+    fund_benchmark STRING(MAX),
+    morningstar_benchmark STRING(MAX),
+    equity_style STRING(MAX),
+    equity_style_score FLOAT64,
+    equity_size STRING(MAX),
+    equity_size_score FLOAT64,
+    price_prospective_earnings FLOAT64,
+    price_book_ratio FLOAT64,
+    price_sales_ratio FLOAT64,
+    price_cash_flow_ratio FLOAT64,
+    dividend_yield_factor FLOAT64,
+    long_term_projected_earnings_growth FLOAT64,
+    historical_earnings_growth FLOAT64,
+    sales_growth FLOAT64,
+    cash_flow_growth FLOAT64,
+    book_value_growth FLOAT64,
+    roa FLOAT64,
+    roe FLOAT64,
+    roic FLOAT64,
+    bond_interest_rate_sensitivity STRING(MAX),
+    bond_credit_quality STRING(MAX),
+    average_coupon_rate FLOAT64,
+    average_credit_quality FLOAT64,
+    modified_duration FLOAT64,
+    effective_maturity FLOAT64,
+    asset_stock FLOAT64,
+    asset_bond FLOAT64,
+    asset_cash FLOAT64,
+    asset_other FLOAT64,
+    country_exposure STRING(MAX),
+    sector_basic_materials FLOAT64,
+    sector_consumer_cyclical FLOAT64,
+    sector_financial_services FLOAT64,
+    sector_real_estate FLOAT64,
+    sector_consumer_defensive FLOAT64,
+    sector_healthcare FLOAT64,
+    sector_utilities FLOAT64,
+    sector_communication_services FLOAT64,
+    sector_energy FLOAT64,
+    sector_industrials FLOAT64,
+    sector_technology FLOAT64,
+    market_cap_giant FLOAT64,
+    market_cap_large FLOAT64,
+    market_cap_medium FLOAT64,
+    market_cap_small FLOAT64,
+    market_cap_micro FLOAT64,
+    credit_aaa FLOAT64,
+    credit_aa FLOAT64,
+    credit_a FLOAT64,
+    credit_bbb FLOAT64,
+    credit_bb FLOAT64,
+    credit_b FLOAT64,
+    credit_below_b FLOAT64,
+    credit_not_rated FLOAT64,
+    holdings_n_stock FLOAT64,
+    holdings_n_bonds FLOAT64,
+    ongoing_cost FLOAT64,
+    management_fees FLOAT64,
+    environmental_score FLOAT64,
+    social_score FLOAT64,
+    governance_score FLOAT64,
+    sustainability_score FLOAT64,
+    sustainability_rank FLOAT64,
+    sustainability_percentage_rank FLOAT64,
+    involvement_abortive_contraceptive FLOAT64,
+    involvement_alcohol FLOAT64,
+    involvement_animal_testing FLOAT64,
+    involvement_controversial_weapons FLOAT64,
+    involvement_gambling FLOAT64,
+    involvement_gmo FLOAT64,
+    involvement_military_contracting FLOAT64,
+    involvement_nuclear FLOAT64,
+    involvement_palm_oil FLOAT64,
+    involvement_pesticides FLOAT64,
+    involvement_small_arms FLOAT64,
+    involvement_thermal_coal FLOAT64,
+    involvement_tobacco FLOAT64,
+    latest_nav_date DATE,
+    nav_per_share_currency STRING(MAX),
+    nav_per_share FLOAT64,
+    shareclass_size_currency STRING(MAX),
+    shareclass_size FLOAT64,
+    fund_size_currency STRING(MAX),
+    fund_size FLOAT64,
+    top5_regions STRING(MAX),
+    top5_holdings STRING(MAX),
+    fund_trailing_return_ytd FLOAT64,
+    fund_trailing_return_3years FLOAT64,
+    fund_trailing_return_5years FLOAT64,
+    fund_trailing_return_10years FLOAT64,
+    fund_return_2019 FLOAT64,
+    fund_return_2018 FLOAT64,
+    fund_return_2017 FLOAT64,
+    fund_return_2016 FLOAT64,
+    fund_return_2015 FLOAT64,
+    fund_return_2020_q3 FLOAT64,
+    fund_return_2020_q2 FLOAT64,
+    fund_return_2020_q1 FLOAT64,
+    fund_return_2019_q4 FLOAT64,
+    fund_return_2019_q3 FLOAT64,
+    fund_return_2019_q2 FLOAT64,
+    fund_return_2019_q1 FLOAT64,
+    fund_return_2018_q4 FLOAT64,
+    fund_return_2018_q3 FLOAT64,
+    fund_return_2018_q2 FLOAT64,
+    fund_return_2018_q1 FLOAT64,
+    fund_return_2017_q4 FLOAT64,
+    fund_return_2017_q3 FLOAT64,
+    fund_return_2017_q2 FLOAT64,
+    fund_return_2017_q1 FLOAT64,
+    fund_return_2016_q4 FLOAT64,
+    fund_return_2016_q3 FLOAT64,
+    fund_return_2016_q2 FLOAT64,
+    fund_return_2016_q1 FLOAT64,
+    fund_return_2015_q4 FLOAT64,
+    fund_return_2015_q3 FLOAT64,
+    fund_return_2015_q2 FLOAT64,
+    fund_return_2015_q1 FLOAT64,
+    quarters_up FLOAT64,
+    quarters_down FLOAT64,
+    investment_strategy_Embedding ARRAY<FLOAT64>,
+    fund_name_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(fund_name)) HIDDEN,
+    category_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(category)) HIDDEN,
+    investment_strategy_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(investment_strategy)) HIDDEN,
+    investment_managers_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(investment_managers)) HIDDEN,
+    fund_benchmark_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(fund_benchmark)) HIDDEN,
+    morningstar_benchmark_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(morningstar_benchmark)) HIDDEN,
+    top5_regions_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(top5_regions)) HIDDEN,
+    top5_holdings_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(top5_holdings)) HIDDEN,
+    investment_managers_Substring_Tokens TOKENLIST AS (TOKENIZE_SUBSTRING(investment_managers)) HIDDEN,
+    )
+PRIMARY KEY
+  (NewMFSequence);
+
+If Altering is needed 
+
+    ALTER TABLE EU_MutualFunds ADD COLUMN  fund_name_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(fund_name)) HIDDEN;
+    ALTER TABLE EU_MutualFunds ADD COLUMN  category_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(category)) HIDDEN;
+    ALTER TABLE EU_MutualFunds ADD COLUMN  investment_strategy_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(investment_strategy)) HIDDEN;
+    ALTER TABLE EU_MutualFunds ADD COLUMN  investment_managers_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(investment_managers)) HIDDEN;
+    ALTER TABLE EU_MutualFunds ADD COLUMN  fund_benchmark_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(fund_benchmark)) HIDDEN;
+    ALTER TABLE EU_MutualFunds ADD COLUMN  morningstar_benchmark_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(morningstar_benchmark)) HIDDEN;
+    ALTER TABLE EU_MutualFunds ADD COLUMN  top5_regions_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(top5_regions)) HIDDEN;
+    ALTER TABLE EU_MutualFunds ADD COLUMN  top5_holdings_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(top5_holdings)) HIDDEN;
+ALTER TABLE EU_MutualFunds ADD COLUMN  investment_managers_Substring_Tokens  TOKENLIST AS (TOKENIZE_SUBSTRING(investment_managers)) HIDDEN;
+
+
+
+Indexes
+CREATE SEARCH INDEX
+ category_Tokens_IDX
+ON
+ EU_MutualFunds(category_Tokens);
+CREATE SEARCH INDEX
+ fund_benchmark_Tokens_IDX
+ON
+ EU_MutualFunds(fund_benchmark_Tokens);
+CREATE SEARCH INDEX
+ fund_name_Tokens_IDX
+ON
+ EU_MutualFunds(fund_name_Tokens);
+CREATE SEARCH INDEX
+ investment_managers_Tokens_IDX
+ON
+ EU_MutualFunds(investment_managers_Tokens);
+CREATE SEARCH INDEX
+ investment_strategy_Tokens_IDX
+ON
+ EU_MutualFunds(investment_strategy_Tokens);
+CREATE SEARCH INDEX
+ morningstar_benchmark_Tokens_IDX
+ON
+ EU_MutualFunds(morningstar_benchmark_Tokens);
+CREATE SEARCH INDEX
+ top5_holdings_Tokens_IDX
+ON
+ EU_MutualFunds(top5_holdings_Tokens);
+CREATE SEARCH INDEX
+ top5_regions_Tokens_IDX
+ON
+ EU_MutualFunds(top5_regions_Tokens);
+CREATE SEARCH INDEX
+investment_managers_Substring_Tokens_IDX
+ON
+EU_MutualFunds(investment_managers_Substring_Tokens);
+
+
+CREATE SEARCH INDEX
+ investment_managers_Substring_investment_Strategy_Tokens_Combo_IDX
+ON
+ EU_MutualFunds(investment_managers_Substring_Tokens,
+   investment_strategy_Tokens);
