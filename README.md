@@ -23,5 +23,5 @@ go to ```database.py``` and change these values
 ### Build the container: 
     gcloud builds submit --tag gcr.io/spanner-demos-ce/finance-advisor-app
 ### Deploy the container: 
-    gcloud run deploy --image gcr.io/spanner-demos-ce/finance-advisor-app --platform managed --allow-unauthenticated
+    gcloud run deploy finance-advisor-app --image gcr.io/spanner-demos-ce/finance-advisor-app --platform managed  --allow-unauthenticated  --region us-central1
 
