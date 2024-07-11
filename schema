@@ -1,3 +1,10 @@
+CREATE SEQUENCE EU_MF_Sequence OPTIONS (
+    sequence_kind='bit_reversed_positive',
+    skip_range_min = 1,
+    skip_range_max = 1000,
+    start_with_counter = 50);
+
+DROP TABLE EU_MutualFunds;
 CREATE TABLE
   EU_MutualFunds ( NewMFSequence INT64 DEFAULT (GET_NEXT_SEQUENCE_VALUE(SEQUENCE EU_MF_Sequence)),
     ticker STRING(MAX),
@@ -132,7 +139,7 @@ CREATE TABLE
     fund_return_2015_q1 FLOAT64,
     quarters_up FLOAT64,
     quarters_down FLOAT64,
-    investment_strategy_Embedding ARRAY<FLOAT64>,
+    investment_strategy_Embedding ARRAY<FLOAT64> (vector_length=>768),
     fund_name_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(fund_name)) HIDDEN,
     category_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(category)) HIDDEN,
     investment_strategy_Tokens TOKENLIST AS (TOKENIZE_FULLTEXT(investment_strategy)) HIDDEN,
@@ -161,46 +168,50 @@ ALTER TABLE EU_MutualFunds ADD COLUMN  investment_managers_Substring_Tokens  TOK
 
 
 Indexes
+
+DROP INDEX category_Tokens_IDX;
 CREATE SEARCH INDEX
  category_Tokens_IDX
 ON
  EU_MutualFunds(category_Tokens);
-CREATE SEARCH INDEX
- fund_benchmark_Tokens_IDX
-ON
- EU_MutualFunds(fund_benchmark_Tokens);
-CREATE SEARCH INDEX
- fund_name_Tokens_IDX
-ON
- EU_MutualFunds(fund_name_Tokens);
-CREATE SEARCH INDEX
- investment_managers_Tokens_IDX
-ON
- EU_MutualFunds(investment_managers_Tokens);
-CREATE SEARCH INDEX
- investment_strategy_Tokens_IDX
-ON
- EU_MutualFunds(investment_strategy_Tokens);
-CREATE SEARCH INDEX
- morningstar_benchmark_Tokens_IDX
-ON
- EU_MutualFunds(morningstar_benchmark_Tokens);
-CREATE SEARCH INDEX
- top5_holdings_Tokens_IDX
-ON
- EU_MutualFunds(top5_holdings_Tokens);
-CREATE SEARCH INDEX
- top5_regions_Tokens_IDX
-ON
- EU_MutualFunds(top5_regions_Tokens);
-CREATE SEARCH INDEX
-investment_managers_Substring_Tokens_IDX
-ON
-EU_MutualFunds(investment_managers_Substring_Tokens);
 
 
-CREATE SEARCH INDEX
- investment_managers_Substring_investment_Strategy_Tokens_Combo_IDX
-ON
- EU_MutualFunds(investment_managers_Substring_Tokens,
-   investment_strategy_Tokens);
+  CREATE SEARCH INDEX
+  fund_benchmark_Tokens_IDX
+  ON
+  EU_MutualFunds(fund_benchmark_Tokens);
+  CREATE SEARCH INDEX
+  fund_name_Tokens_IDX
+  ON
+  EU_MutualFunds(fund_name_Tokens);
+  CREATE SEARCH INDEX
+  investment_managers_Tokens_IDX
+  ON
+  EU_MutualFunds(investment_managers_Tokens);
+  CREATE SEARCH INDEX
+  investment_strategy_Tokens_IDX
+  ON
+  EU_MutualFunds(investment_strategy_Tokens);
+  CREATE SEARCH INDEX
+  morningstar_benchmark_Tokens_IDX
+  ON
+  EU_MutualFunds(morningstar_benchmark_Tokens);
+  CREATE SEARCH INDEX
+  top5_holdings_Tokens_IDX
+  ON
+  EU_MutualFunds(top5_holdings_Tokens);
+  CREATE SEARCH INDEX
+  top5_regions_Tokens_IDX
+  ON
+  EU_MutualFunds(top5_regions_Tokens);
+  CREATE SEARCH INDEX
+  investment_managers_Substring_Tokens_IDX
+  ON
+  EU_MutualFunds(investment_managers_Substring_Tokens);
+
+
+  CREATE SEARCH INDEX
+  investment_managers_Substring_investment_Strategy_Tokens_Combo_IDX
+  ON
+  EU_MutualFunds(investment_managers_Substring_Tokens,
+    investment_strategy_Tokens);

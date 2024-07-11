@@ -29,6 +29,7 @@ def simple_func_nonx():
             title=row["sector_name"],
         )
 
+
     # managers = returnVals.get("Managers")
     # for index, row in managers.iterrows():
     #     print(f"Index: {index}, Name: {row['name']}")
@@ -56,4 +57,10 @@ def simple_func_nonx():
     fundHoldCompanyRelation = returnVals.get("FundsHoldsCompaniesRelation")
     for index, row in fundHoldCompanyRelation.iterrows():
         graph.add_edge(str(row["NewMFSequence"]), str(row["CompanySeq"]), title="HOLDS")
+    
+    # Add Legend Nodes
+ 
+    
+    
+    
     graph.show("Anirban.html")

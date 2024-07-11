@@ -49,7 +49,10 @@ def asset_semantic_search():
     with st.spinner("Querying Spanner..."):
         start_time = time.time()
         # data_load_state = st.text("Loading data...")
-        returnVals = semantic_query(query_params)
+        if annVsKNN == "KNN":
+            returnVals = semantic_query(query_params)
+        else:
+            returnVals = semantic_query_ann(query_params)
         spanner_query = returnVals.get("query")
         data = returnVals.get("data")
         time_spent = time.time() - start_time
@@ -73,6 +76,7 @@ with st.sidebar:
 
     with st.form("Asset Semantic Search"):
         st.subheader("Search Criteria")
+        annVsKNN = st.radio("", ["ANN", "KNN"], horizontal=True)
         investment_strategy = st.text_area(
             "Search for me",
             value="Invest in companies which also subscribe to my ideas around climate change, doing good for the planet",

@@ -3,13 +3,21 @@ from google.cloud import spanner
 import pandas as pd
 import os
 from dotenv import load_dotenv
+from google.api_core.client_options import ClientOptions
 
 load_dotenv()
 
-instance_id = os.getenv('instance_id')
-database_id = os.getenv('database_id')
+instance_id = os.getenv("instance_id")
+database_id = os.getenv("database_id")
+api_endpoint = os.getenv("api_endpoint")
 
-spanner_client = spanner.Client()
+options = ClientOptions(api_endpoint=api_endpoint)
+spanner_client = spanner.Client(client_options=options)
+# if(api_endpoint !=''):
+#     options = ClientOptions(api_endpoint=api_endpoint)
+#     spanner_client = spanner.Client(client_options=options)
+# else:
+#     spanner_client = spanner.Client()
 
 # Get a Cloud Spanner instance by ID.
 instance = spanner_client.instance(instance_id)
@@ -32,6 +40,37 @@ def spanner_read_data(query):
     return result_df
 
 
+def spanner_read_data_returnList(query):
+    # Execute a simple SQL statement.
+    outputs = []
+    with database.snapshot() as snapshot:
+        results = snapshot.execute_sql(query)
+        rows = list()
+        for row in results:
+            rows.append(row)
+    return rows
+
+
+def spanner_read_data_withparam(query, vectorInput):
+    # Execute a simple SQL statement.
+    outputs = []
+    with database.snapshot() as snapshot:
+
+        results = snapshot.execute_sql(
+            query,
+            params={"vector": vectorInput},
+        )
+        rows = list()
+        for row in results:
+            rows.append(row)
+        # Get column names
+        cols = [x.name for x in results.fields]
+        # Convert to pandas dataframe
+        result_df = pd.DataFrame(rows, columns=cols)
+
+    return result_df
+
+
 def fts_query(query_params):
     print("Query Part", query_params)
 
@@ -43,12 +82,15 @@ def fts_query(query_params):
         )
     else:
         query = (
-            "SELECT DISTINCT fund_name, investment_managers, investment_strategy FROM EU_MutualFunds WHERE SEARCH_SUBSTRING(investment_managers_Substring_Tokens, '"
+            "SELECT DISTINCT fund_name, manager, strategy, score FROM (SELECT fund_name , investment_managers AS manager, investment_strategy as strategy, SCORE_NGRAMS(investment_managers_Substring_Tokens_NGRAM, '"
             + query_params[1]
-            + "') AND SEARCH(investment_strategy_Tokens, '"
+            + "') AS score FROM EU_MutualFunds WHERE SEARCH_NGRAMS(investment_managers_Substring_Tokens_NGRAM, '"
+            + query_params[1]
+            + "', min_ngrams=>1) AND SEARCH(investment_strategy_Tokens, '"
             + query_params[0]
-            + "') ORDER BY fund_name;"
+            + "') ) ORDER BY score DESC;"
         )
+
     returnVals = dict()
     returnVals["query"] = query
     print("FTS Query", query)
@@ -80,6 +122,53 @@ def semantic_query(query_params):
     df = spanner_read_data(query)
 
     returnVals["data"] = df
+    return returnVals
+
+
+def semantic_query_ann(query_params):
+    print("Query Part", query_params)
+
+    query1 = (
+        'SELECT embeddings. VALUES as vector FROM ML.PREDICT( MODEL EmbeddingsModel, (SELECT "'
+        + query_params[0]
+        + '" AS content) ) ;'
+    )
+    print(query1)
+    vectorInput = spanner_read_data_returnList(query1)
+    vectorInput[0][0]
+
+    # query2="SELECT fund_name, investment_strategy,investment_managers, APPROX_EUCLIDEAN_DISTANCE( investment_strategy_Embedding_vector, @vector, options => JSON '{\"num_leaves_to_search\": 10}') AS distance FROM EU_MutualFunds @{force_index=InvestmentStrategyEmbeddingIndex} WHERE investment_strategy_Embedding_vector is not NULL ORDER BY distance LIMIT 10; "
+    query2 = (
+        "SELECT funds.fund_name, funds.investment_strategy, funds.investment_managers FROM (SELECT NewMFSequence, APPROX_EUCLIDEAN_DISTANCE(investment_strategy_Embedding_vector, @vector, options => JSON '{\"num_leaves_to_search\": 10}') AS distance FROM EU_MutualFunds @{force_index = InvestmentStrategyEmbeddingIndex} WHERE investment_strategy_Embedding_vector IS NOT NULL ORDER BY distance LIMIT 500 ) AS ann JOIN EU_MutualFunds AS funds ON ann.NewMFSequence = funds.NewMFSequence WHERE SEARCH_NGRAMS(funds.investment_managers_Substring_Tokens_NGRAM, '"
+        + query_params[1]
+        + "',min_ngrams=>1)  ORDER BY SCORE_NGRAMS(funds.investment_managers_Substring_Tokens_NGRAM, '"
+        + query_params[1]
+        + "') desc;"
+    )
+
+    print(query2)
+    results_df = spanner_read_data_withparam(query2, vectorInput[0][0])
+
+    # if query_params[1].strip() != "":
+    #     query = (
+    #         "SELECT fund_name, investment_strategy,investment_managers, COSINE_DISTANCE( investment_strategy_Embedding, (SELECT embeddings. VALUES FROM ML.PREDICT( MODEL EmbeddingsModel, (SELECT '"
+    #         + query_params[0]
+    #         + "' AS content) ) ) ) AS distance FROM EU_MutualFunds WHERE investment_strategy_Embedding is not NULL  AND  search_substring(investment_managers_substring_tokens, '"
+    #         + query_params[1]
+    #         + "')ORDER BY distance LIMIT 10;"
+    #     )
+    # else:
+    #     query = (
+    #         "SELECT fund_name, investment_strategy,investment_managers, COSINE_DISTANCE( investment_strategy_Embedding, (SELECT embeddings. VALUES FROM ML.PREDICT( MODEL EmbeddingsModel, (SELECT '"
+    #         + query_params[0]
+    #         + "' AS content) ) ) ) AS distance FROM EU_MutualFunds WHERE investment_strategy_Embedding is not NULL  ORDER BY distance LIMIT 10;"
+    #     )
+    returnVals = dict()
+    returnVals["query"] = query2
+    print("Semantic ANN Query", query2)
+    # df = spanner_read_data(query)
+
+    returnVals["data"] = results_df
     return returnVals
 
 
@@ -119,9 +208,9 @@ def compliance_query(query_params):
     )
 
     returnVals = dict()
+    print("Graph Query", query)
     returnVals["query"] = query
     df = spanner_read_data(query)
-
     returnVals["data"] = df
     return returnVals
 
@@ -152,7 +241,7 @@ def graph_dtls_query():
 
     query = "select fund_name, NewMFSequence from EU_MutualFunds where NewMFSequence in (SELECT NewMFSequence FROM FundHoldsCompany);"
     # query = "SELECT mgrs.NewMFSequence,fund_name,ManagerSeq from ManagerManagesFund mgrs JOIN EU_MutualFunds funds ON mgrs.NewMFSequence =  funds.NewMFSequence ;"
-    #query = "select fund_name, NewMFSequence from EU_MutualFunds where NewMFSequence in (SELECT NewMFSequence FROM FundHoldsCompany);"
+    # query = "select fund_name, NewMFSequence from EU_MutualFunds where NewMFSequence in (SELECT NewMFSequence FROM FundHoldsCompany);"
 
     funds_node = spanner_read_data(query)
     returnVals["Funds"] = funds_node

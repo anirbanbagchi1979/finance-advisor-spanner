@@ -19,6 +19,11 @@ graph_viz.simple_func_nonx()
 
 HtmlFile = open("Anirban.html", "r", encoding="utf-8")
 source_code = HtmlFile.read()
-components.html(source_code, height=950, width=1000)
+components.html(source_code, height=950, width=900)
+
+with st.sidebar:
+    st.subheader("Legend")
+    st.image("images/Graph-legend.png")
+
 
 
