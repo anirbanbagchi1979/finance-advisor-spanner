@@ -137,15 +137,17 @@ def semantic_query_ann(query_params):
     vectorInput = spanner_read_data_returnList(query1)
     vectorInput[0][0]
 
-    # query2="SELECT fund_name, investment_strategy,investment_managers, APPROX_EUCLIDEAN_DISTANCE( investment_strategy_Embedding_vector, @vector, options => JSON '{\"num_leaves_to_search\": 10}') AS distance FROM EU_MutualFunds @{force_index=InvestmentStrategyEmbeddingIndex} WHERE investment_strategy_Embedding_vector is not NULL ORDER BY distance LIMIT 10; "
-    query2 = (
-        "SELECT funds.fund_name, funds.investment_strategy, funds.investment_managers FROM (SELECT NewMFSequence, APPROX_EUCLIDEAN_DISTANCE(investment_strategy_Embedding_vector, @vector, options => JSON '{\"num_leaves_to_search\": 10}') AS distance FROM EU_MutualFunds @{force_index = InvestmentStrategyEmbeddingIndex} WHERE investment_strategy_Embedding_vector IS NOT NULL ORDER BY distance LIMIT 500 ) AS ann JOIN EU_MutualFunds AS funds ON ann.NewMFSequence = funds.NewMFSequence WHERE SEARCH_NGRAMS(funds.investment_managers_Substring_Tokens_NGRAM, '"
-        + query_params[1]
-        + "',min_ngrams=>1)  ORDER BY SCORE_NGRAMS(funds.investment_managers_Substring_Tokens_NGRAM, '"
-        + query_params[1]
-        + "') desc;"
-    )
-
+    if query_params[1].strip() != "":
+        # query2="SELECT fund_name, investment_strategy,investment_managers, APPROX_EUCLIDEAN_DISTANCE( investment_strategy_Embedding_vector, @vector, options => JSON '{\"num_leaves_to_search\": 10}') AS distance FROM EU_MutualFunds @{force_index=InvestmentStrategyEmbeddingIndex} WHERE investment_strategy_Embedding_vector is not NULL ORDER BY distance LIMIT 10; "
+        query2 = (
+            "SELECT funds.fund_name, funds.investment_strategy, funds.investment_managers FROM (SELECT NewMFSequence, APPROX_EUCLIDEAN_DISTANCE(investment_strategy_Embedding_vector, @vector, options => JSON '{\"num_leaves_to_search\": 10}') AS distance FROM EU_MutualFunds @{force_index = InvestmentStrategyEmbeddingIndex} WHERE investment_strategy_Embedding_vector IS NOT NULL ORDER BY distance LIMIT 500 ) AS ann JOIN EU_MutualFunds AS funds ON ann.NewMFSequence = funds.NewMFSequence WHERE SEARCH_NGRAMS(funds.investment_managers_Substring_Tokens_NGRAM, '"
+            + query_params[1]
+            + "',min_ngrams=>1)  ORDER BY SCORE_NGRAMS(funds.investment_managers_Substring_Tokens_NGRAM, '"
+            + query_params[1]
+            + "') desc;"
+        )
+    else:
+        query2 = "SELECT fund_name, investment_strategy, investment_managers, APPROX_EUCLIDEAN_DISTANCE(investment_strategy_Embedding_vector, @vector, options => JSON '{\"num_leaves_to_search\": 10}') AS distance FROM EU_MutualFunds @{force_index = InvestmentStrategyEmbeddingIndex} WHERE investment_strategy_Embedding_vector IS NOT NULL ORDER BY distance LIMIT 100;"
     print(query2)
     results_df = spanner_read_data_withparam(query2, vectorInput[0][0])
 

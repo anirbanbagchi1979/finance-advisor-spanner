@@ -35,15 +35,5 @@ go to ```database.py``` and change these values
 gcloud beta run services proxy finance-advisor-app --port=8080   
 
 
-
-gcloud compute network-endpoint-groups create neg-hello-us-west1 \
-       --region=us-west1 \
-       --network-endpoint-type=serverless  \
-       --cloud-run-service=finance-advisor-app-iap
-
-gcloud compute backend-services create finvest-iap-backend-service --global
-
-gcloud compute backend-services add-backend finvest-iap-backend-service \
-       --global \
-       --network-endpoint-group=neg-hello-us-west1 \
-       --network-endpoint-group-region=us-west1
+### Deploy to Google App Engine - Flex
+gcloud app deploy 
