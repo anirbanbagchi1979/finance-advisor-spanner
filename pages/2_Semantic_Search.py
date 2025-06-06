@@ -23,7 +23,7 @@ st.set_page_config(
 st.logo("images/investments.png")
 
 
-def asset_semantic_search():
+def asset_semantic_search() -> None:
     st.header("FinVest Fund Advisor")
     st.subheader("Semantic Search")
 

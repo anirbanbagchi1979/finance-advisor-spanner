@@ -25,7 +25,7 @@ st.set_page_config(
 st.logo("images/investments.png")
 
 
-def compliance_search():
+def compliance_search() -> None:
     st.header("FinVest Fund Advisor")
     st.subheader("Exposure Check")
 

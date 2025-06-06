@@ -7,7 +7,7 @@ import random
 from database import *
 
 
-def simple_func_nonx():
+def simple_func_nonx() -> None:
     graph = Network("900px", "900px", notebook=True, heading="")
     returnVals = graph_dtls_query()
     companies = returnVals.get("Companies")

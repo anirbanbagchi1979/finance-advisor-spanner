@@ -3,6 +3,7 @@ from google.cloud import spanner
 import pandas as pd
 import os
 from dotenv import load_dotenv
+from typing import List, Dict, Any
 
 load_dotenv()
 
@@ -17,7 +18,7 @@ instance = spanner_client.instance(instance_id)
 database = instance.database(database_id)
 
 
-def spanner_read_data(query):
+def spanner_read_data(query: str) -> pd.DataFrame:
     # Execute a simple SQL statement.
     outputs = []
     with database.snapshot() as snapshot:
@@ -32,7 +33,7 @@ def spanner_read_data(query):
     return result_df
 
 
-def fts_query(query_params):
+def fts_query(query_params: List[str]) -> Dict[str, Any]:
     print("Query Part", query_params)
 
     if query_params[1] == "":
@@ -58,7 +59,7 @@ def fts_query(query_params):
     return returnVals
 
 
-def semantic_query(query_params):
+def semantic_query(query_params: List[str]) -> Dict[str, Any]:
     print("Query Part", query_params)
     if query_params[1].strip() != "":
         query = (
@@ -83,7 +84,7 @@ def semantic_query(query_params):
     return returnVals
 
 
-def like_query(query_params):
+def like_query(query_params: List[str]) -> Dict[str, Any]:
     if query_params[1] == "EXCLUDE":
         query_params[1] = "AND"
     query = (
@@ -109,7 +110,7 @@ def like_query(query_params):
     return returnVals
 
 
-def compliance_query(query_params):
+def compliance_query(query_params: List[str]) -> Dict[str, Any]:
     query = (
         "GRAPH FundGraph MATCH (sector:Sector {sector_name: '"
         + query_params[0]
@@ -126,7 +127,7 @@ def compliance_query(query_params):
     return returnVals
 
 
-def graph_dtls_query():
+def graph_dtls_query() -> Dict[str, pd.DataFrame]:
     query = "select * from  Companies;"
     df = spanner_read_data(query)
 

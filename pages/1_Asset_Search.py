@@ -24,7 +24,7 @@ st.set_page_config(
 st.logo("images/investments.png")
 
 
-def local_css(file_name):
+def local_css(file_name: str) -> None:
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
@@ -32,7 +32,7 @@ def local_css(file_name):
 local_css("pages/styles.css")
 
 
-def asset_search_precise():
+def asset_search_precise() -> None:
     # st.image('images/Finvest-white-removebg-small.png')
     st.header("FinVest Fund Advisor")
     st.subheader("Asset Search")
@@ -88,7 +88,7 @@ def asset_search_precise():
     interactive_table(data, caption="", **it_args)
 
 
-def asset_search():
+def asset_search() -> None:
     # st.image('images/Finvest-white-removebg-small.png')
     st.header("FinVest Fund Advisor")
     st.subheader("Asset Search")
